@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "IncrementSequenceTest": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}
