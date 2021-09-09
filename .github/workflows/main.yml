@@ -42,9 +42,9 @@ jobs:
       run: dotnet format IncrementSequenceTest/IncrementSequenceTest.csproj --check --verbosity diagnostic
       
     - name: Restore dependencies
-      run: dotnet restore IncrementSequence.sln
+      run: dotnet restore coding-challenge.sln
     - name: Build
-      run: dotnet build IncrementSequence.sln --no-restore
+      run: dotnet build coding-challenge.sln --no-restore
     - name: Test
       run: dotnet test IncrementSequenceTest/IncrementSequenceTest.csproj --logger trx --results-directory "TestResults-${{ matrix.dotnet-version }}"
     
