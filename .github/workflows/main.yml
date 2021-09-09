@@ -1,0 +1,50 @@
+name: .NET
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: coding-challenge
+    strategy:
+      matrix:
+        dotnet: [ '3.1.x' ]
+        
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ matrix.dotnet-version }}
+        
+    # Format the output of dotnet format
+    - name: Add dotnet-format problem matcher
+      uses: xt0rted/dotnet-format-problem-matcher@v1
+      # Install dotnet format as a global tool
+    - name: Install dotnet format
+      run: dotnet tool update --global dotnet-format
+
+    # Run dotnet format --dry-run --check
+    # By default, the task ensure the exit code is 0
+    # If a file needs to be edited by dotnet format, the exit code will be a non-zero value
+    # So the task will fail
+    - name: Run dotnet format
+      run: dotnet format IncrementSequenceApi/IncrementSequenceApi.csproj --check --verbosity diagnostic
+      
+    - name: Run dotnet format
+      run: dotnet format IncrementSequenceTest/IncrementSequenceTest.csproj --check --verbosity diagnostic
+      
+    - name: Restore dependencies
+      run: dotnet restore IncrementSequence.sln
+    - name: Build
+      run: dotnet build IncrementSequence.sln --no-restore
+    - name: Test
+      run: dotnet test IncrementSequenceTest/IncrementSequenceTest.csproj --logger trx --results-directory "TestResults-${{ matrix.dotnet-version }}"
+    
